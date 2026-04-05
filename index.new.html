@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>衣橱搭配台</title>
+  <style>
+    :root {
+      --bg: #f5f2eb;
+      --panel: rgba(255, 255, 255, 0.84);
+      --line: rgba(27, 26, 24, 0.08);
+      --text: #1b1a18;
+      --muted: #6b655d;
+      --accent: #1b1a18;
+      --success: #2f6b46;
+      --danger: #a23939;
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-pill: 999px;
+      --shadow: 0 18px 48px rgba(43, 37, 29, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.76), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(222, 209, 190, 0.58), transparent 34%),
+        linear-gradient(180deg, #faf7f2 0%, #f2ece2 100%);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    button, input, select { font: inherit; }
+    button { border: 0; padding: 0; background: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    [hidden] { display: none !important; }
+
+    .app { max-width: 1420px; margin: 0 auto; padding: 24px 18px 42px; }
+    .hero, .panel {
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.58);
+      box-shadow: var(--shadow);
+    }
+    .hero {
+      padding: 24px;
+      border-radius: 34px;
+    }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+    }
+    .hero-copy { max-width: 620px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(27, 26, 24, 0.05);
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(34px, 6vw, 68px);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      max-width: 8ch;
+    }
+    .hero-copy p,
+    .helper,
+    .panel-note,
+    .auth-status,
+    .sync-note,
+    .calendar-summary,
+    .library-meta,
+    .look-meta,
+    .preview-sub,
+    .metric-note,
+    .pager-note,
+    .cleanup-copy {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .hero-copy p { font-size: 15px; }
+    .auth-status { font-size: 13px; }
+    .auth-status.is-success { color: var(--success); }
+    .auth-status.is-error { color: var(--danger); }
+
+    .quick-actions,
+    .inline-tools,
+    .toolbar,
+    .tag-row,
+    .stats,
+    .calendar-actions,
+    .preview-actions,
+    .library-actions,
+    .look-actions,
+    .chooser-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .quick-actions { margin-top: 22px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(27, 26, 24, 0.08); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
+    .btn.primary { background: var(--accent); color: #fff; }
+    .btn.secondary { background: rgba(255, 255, 255, 0.72); border-color: var(--line); }
+    .btn.ghost { border-color: var(--line); }
+
+    .hero-side { width: min(100%, 340px); display: grid; gap: 12px; }
+    .metric-card {
+      padding: 16px;
+      border-radius: 22px;
+      border: 1px solid rgba(27, 26, 24, 0.06);
+      background: rgba(255, 255, 255, 0.82);
+    }
+    .metric-label { color: var(--muted); font-size: 13px; }
+    .metric-value { margin-top: 8px; font-size: 32px; font-weight: 700; letter-spacing: -0.04em; }
+    .metric-note { margin-top: 8px; font-size: 12px; }
+    .auth-grid { margin-top: 12px; display: grid; gap: 12px; }
+    .sync-note { margin-top: 10px; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 340px minmax(0, 1fr);
+      gap: 18px;
+      margin-top: 20px;
+    }
+    .panel { border-radius: var(--radius-xl); }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 20px 14px;
+    }
+    .panel-head h2 { margin: 0; font-size: 18px; }
+    .panel-body { padding: 0 20px 20px; }
+    .stack, .main, .stage, .chooser { display: grid; gap: 16px; }
+
+    .dropzone {
+      padding: 22px;
+      text-align: center;
+      border: 1.5px dashed rgba(27, 26, 24, 0.16);
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(247, 243, 236, 0.96));
+      transition: border-color 0.18s ease;
+    }
+    .dropzone.drag { border-color: rgba(27, 26, 24, 0.42); }
+    .dropzone input { display: none; }
+    .dropzone-icon {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: rgba(27, 26, 24, 0.06);
+      font-size: 24px;
+    }
+    .dropzone-title { font-size: 18px; font-weight: 600; }
+    .dropzone-copy { margin: 8px auto 14px; max-width: 250px; font-size: 13px; color: var(--muted); }
+
+    .field-grid, .field, .library-editors { display: grid; gap: 12px; }
+    .field label { color: var(--muted); font-size: 13px; }
+    .input, .select {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      outline: none;
+    }
+    .chip, .tag-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.75);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .tag-btn { cursor: pointer; }
+    .tag-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .outfit-stage { display: grid; grid-template-columns: 1.06fr 0.94fr; gap: 18px; }
+    .slot-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .slot-tab {
+      min-height: 58px;
+      padding: 10px 12px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.74);
+      text-align: left;
+      cursor: pointer;
+    }
+    .slot-tab.active { border-color: rgba(27, 26, 24, 0.2); box-shadow: 0 12px 24px rgba(27, 26, 24, 0.06); }
+    .slot-title { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .slot-value { display: block; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .outfit-preview {
+      padding: 20px;
+      border-radius: 26px;
+      border: 1px solid rgba(27, 26, 24, 0.06);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(245, 239, 231, 0.92));
+    }
+    .preview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .preview-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.75);
+      overflow: hidden;
+    }
+    .preview-head, .preview-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+    .preview-label { font-size: 13px; color: var(--muted); }
+    .preview-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(27, 26, 24, 0.05);
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .preview-media {
+      min-height: 180px;
+      display: grid;
+      place-items: center;
+      background: rgba(248, 245, 239, 0.7);
+    }
+    .preview-media img, .picker-thumb img, .library-thumb img, .look-mosaic img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-name { font-size: 14px; font-weight: 600; }
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+    }
+
+    .picker-grid, .library, .looks-grid { display: grid; gap: 12px; }
+    .picker-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); max-height: 420px; overflow: auto; padding-right: 4px; }
+    .picker-card, .library-card, .look-card { border: 1px solid var(--line); background: rgba(255, 255, 255, 0.82); }
+    .picker-card, .library-card {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 20px;
+    }
+    .picker-card { cursor: pointer; }
+    .picker-thumb, .library-thumb { aspect-ratio: 4 / 5; border-radius: 16px; overflow: hidden; background: #f4f0e9; }
+    .picker-name, .library-name, .look-name { font-size: 15px; font-weight: 600; line-height: 1.4; }
+    .library { grid-template-columns: repeat(auto-fill, minmax(188px, 1fr)); gap: 14px; }
+    .library-name { outline: none; }
+    .look-card { overflow: hidden; border-radius: 24px; }
+    .look-mosaic { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(27, 26, 24, 0.06); }
+    .look-mosaic div { aspect-ratio: 1; background: #f4f0e9; }
+    .look-body { display: grid; gap: 10px; padding: 14px; }
+
+    .calendar-panel {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.76);
+    }
+    .calendar-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .calendar-title { font-size: 16px; font-weight: 600; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+    .calendar-weekday { text-align: center; color: var(--muted); font-size: 12px; }
+    .calendar-day {
+      min-height: 72px;
+      padding: 10px 8px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.82);
+      text-align: left;
+      cursor: pointer;
+    }
+    .calendar-day.muted { opacity: 0.38; }
+    .calendar-day.active { border-color: rgba(27, 26, 24, 0.24); background: rgba(27, 26, 24, 0.06); }
+    .calendar-day.has-plan::after {
+      content: "";
+      display: block;
+      width: 8px;
+      height: 8px;
+      margin-top: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+    .calendar-daynum { font-size: 13px; font-weight: 600; }
+
+    .cleanup-bar, .pager { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .cleanup-bar {
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.72);
+    }
+    .pager { margin-top: 16px; }
+    .empty-block, .empty-state { display: grid; gap: 8px; justify-items: center; text-align: center; color: var(--muted); }
+    .empty-block {
+      padding: 32px 16px;
+      border: 1px dashed rgba(27, 26, 24, 0.14);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.56);
+    }
+    .empty-icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: rgba(27, 26, 24, 0.05);
+    }
+
+    @media (max-width: 1180px) { .layout, .outfit-stage { grid-template-columns: 1fr; } }
+    @media (max-width: 860px) {
+      .hero-top { flex-direction: column; }
+      .hero-side { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .app { padding: 16px 12px 32px; }
+      .hero, .panel { border-radius: 24px; }
+      .panel-head, .panel-body { padding-left: 16px; padding-right: 16px; }
+      .hero-side, .preview-grid, .library, .picker-grid, .looks-grid, .slot-tabs { grid-template-columns: 1fr; }
+      .toolbar { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <div class="hero-top">
+        <div class="hero-copy">
+          <div class="eyebrow">Minimal Wardrobe Lab</div>
+          <h1>上传单品，开始搭配。</h1>
+          <p>这是一个极简的个人衣橱网站。你可以上传衣服照片，整理分类和标签，保存喜欢的搭配，也可以把每天想穿的组合记到日历里。</p>
+          <div class="quick-actions">
+            <label class="btn primary" for="fileInput">上传衣服照片</label>
+            <button class="btn secondary" id="randomBtn" type="button">随机生成一套</button>
+            <button class="btn ghost" id="saveLookBtn" type="button">保存当前搭配</button>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="metric-card"><div class="metric-label">当前衣橱总数</div><div class="metric-value" id="totalMetric">0</div><div class="metric-note">上传完成后会自动进入衣橱，刷新页面也不会丢失。</div></div>
+          <div class="metric-card"><div class="metric-label">已保存搭配</div><div class="metric-value" id="looksMetric">0</div><div class="metric-note">把满意的组合留下来，后面可以一键重新载入。</div></div>
+          <div class="metric-card"><div class="metric-label">云端同步</div><div class="auth-status" id="authStatus">未登录，当前数据仅保存在本机浏览器。</div><div class="auth-grid"><input id="authEmail" class="input" type="email" placeholder="邮箱" autocomplete="username email" /><input id="authPassword" class="input" type="password" placeholder="密码" autocomplete="current-password" /></div><div class="inline-tools" style="margin-top:10px"><label class="chip" style="cursor:pointer"><input id="rememberAccount" type="checkbox" style="margin:0" />记住账号</label><span class="chip">保持登录</span></div><div class="inline-tools" style="margin-top:12px"><button class="btn secondary" id="loginBtn" type="button">登录</button><button class="btn ghost" id="signupBtn" type="button">注册</button><button class="btn ghost" id="logoutBtn" type="button" hidden>退出登录</button><button class="btn primary" id="migrateBtn" type="button" hidden>迁移本地数据</button></div><div class="sync-note" id="syncNote">登录后，衣橱、保存搭配和日历记录会同步到 Supabase 云端。</div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <aside class="panel"><div class="panel-head"><h2>上传与整理</h2><div class="panel-note">先把单品放进衣橱</div></div><div class="panel-body"><div class="stack"><div class="dropzone" id="dropzone"><div class="dropzone-icon">+</div><div class="dropzone-title">拖入图片，或点击上传</div><div class="dropzone-copy">支持多张衣服照片批量导入。建议尽量裁出单品主体，后面搭配会更直观。</div><label class="btn primary" for="fileInput">选择图片</label><input type="file" id="fileInput" accept="image/*" multiple /></div><div class="field-grid"><div class="field"><label for="defaultCategory">默认分类</label><select id="defaultCategory" class="select"><option value="top">上装</option><option value="bottom">下装</option><option value="set">套装</option></select></div><div class="field"><label for="defaultColor">默认颜色</label><input id="defaultColor" class="input" type="text" placeholder="例如：黑色、米白、牛仔蓝" /></div><div class="field"><label>季节标签</label><div class="tag-row" id="defaultSeasonTags"><button class="tag-btn" type="button" data-tag="spring" onclick="togglePresetTag('defaultSeasonTags','spring')">春</button><button class="tag-btn" type="button" data-tag="summer" onclick="togglePresetTag('defaultSeasonTags','summer')">夏</button><button class="tag-btn" type="button" data-tag="autumn" onclick="togglePresetTag('defaultSeasonTags','autumn')">秋</button><button class="tag-btn" type="button" data-tag="winter" onclick="togglePresetTag('defaultSeasonTags','winter')">冬</button></div><div class="helper">季节只作为标签记录，不参与主分类。</div></div></div><div class="helper">分类只保留上装、下装、套装。颜色和季节都作为标签记录，上传后也可以继续修改。</div><div class="stats" id="stats"></div><div class="inline-tools"><button class="btn secondary" id="exportBtn" type="button">导出衣橱</button><button class="btn secondary" id="importBtn" type="button">导入衣橱</button><button class="btn ghost" id="clearLooksBtn" type="button">清空已存搭配</button><button class="btn ghost" id="clearAllBtn" type="button">清空全部数据</button><input type="file" id="importFile" accept="application/json" hidden /></div></div></div></aside>
+      <main class="main"><section class="panel"><div class="panel-head"><h2>搭配台</h2><div class="panel-note" id="activeSlotText">正在编辑：卡片 1</div></div><div class="panel-body"><div class="outfit-stage"><div class="stage"><div class="slot-tabs" id="slotTabs"></div><div class="inline-tools"><button class="btn secondary" id="addCardBtn" type="button">新增卡片</button></div><div class="outfit-preview"><div class="preview-grid" id="outfit"></div></div></div><div class="chooser"><div class="chooser-tools"><input id="slotSearchInput" class="input" type="text" placeholder="搜索衣橱单品" /><button class="btn secondary" id="randomSlotBtn" type="button">随机换当前卡片</button><button class="btn ghost" id="clearSlotBtn" type="button">清空当前卡片</button></div><div id="slotPickerWrap"></div></div></div><div class="calendar-panel"><div class="calendar-head"><div><div class="calendar-title" id="calendarTitle">本月穿搭日历</div><div class="calendar-summary" id="selectedDateLabel">已选日期</div></div><div class="inline-tools"><button class="btn ghost" id="prevMonthBtn" type="button">上个月</button><button class="btn ghost" id="nextMonthBtn" type="button">下个月</button></div></div><div class="calendar-grid" id="calendarWeekdays"></div><div class="calendar-grid" id="calendarGrid"></div><div class="calendar-actions"><button class="btn secondary" id="saveDayPlanBtn" type="button">保存到当天</button><button class="btn ghost" id="loadDayPlanBtn" type="button">载入当天穿搭</button><button class="btn ghost" id="clearDayPlanBtn" type="button">清空当天记录</button></div><div class="calendar-summary" id="calendarSummary">这一天还没有保存穿搭。</div></div></div></section><section class="panel"><div class="panel-head"><h2>我的衣橱</h2><div class="panel-note">支持筛选、搜索、直接加入搭配</div></div><div class="panel-body"><div class="toolbar"><select id="filterCategory" class="select" style="max-width:180px"><option value="">全部分类</option><option value="top">上装</option><option value="bottom">下装</option><option value="set">套装</option></select><input id="searchInput" class="input" type="text" placeholder="搜索名称、颜色或季节" style="max-width:280px" /></div><div id="libraryWrap"></div></div></section><section class="panel"><div class="panel-head"><h2>已保存搭配</h2><div class="panel-note">把喜欢的组合留下来</div></div><div class="panel-body"><div id="looksWrap"></div></div></section></main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const state = {
+      db: null,
+      supabase: null,
+      user: null,
+      items: [],
+      itemMap: new Map(),
+      looks: [],
+      dayPlans: {},
+      currentOutfit: [],
+      activeCardId: null,
+      currentLibraryPage: 1,
+      showPendingOnly: false,
+      needsLocalMigration: false,
+      selectedDateKey: new Date().toISOString().slice(0, 10),
+      calendarMonth: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      pendingCloudStateTimer: null,
+      pendingSaveTimers: new Map()
+    };
+
+    const byId = (id) => document.getElementById(id);
+    const isCloudMode = () => Boolean(state.user && state.supabase);
+
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+
+    function escapeHtml(text = "") {
+      return String(text).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function normalizeCategory(category) {
+      const value = String(category || "").trim().toLowerCase();
+      if (!value) return "";
+      if (value === "top" || value === "上装") return "top";
+      if (value === "bottom" || value === "下装") return "bottom";
+      if (value === "set" || value === "套装") return "set";
+      return value;
+    }
+
+    function isValidCategory(category) {
+      return Object.prototype.hasOwnProperty.call(categories, normalizeCategory(category));
+    }
+
+    function getSeasonTags(item) {
+      if (Array.isArray(item.seasonTags)) {
+        return item.seasonTags.filter((tag) => seasonOrder.includes(tag));
+      }
+      if (item.season && seasons[item.season]) {
+        return [item.season];
+      }
+      return [];
+    }
+
+    function getSeasonSummary(item) {
+      return getSeasonTags(item).map((tag) => seasons[tag] || tag).join(" / ");
+    }
+
+    function getSelectedSeasonTags(containerId) {
+      return [...byId(containerId).querySelectorAll(".tag-btn.active")].map((button) => button.dataset.tag);
+    }
+
+    function createOutfitCard(label = "") {
+      const resolvedLabel = typeof label === "number" ? `卡片 ${label}` : String(label || "").trim();
+      return { id: uid(), label: resolvedLabel || `卡片 ${state.currentOutfit.length + 1}`, itemId: null };
+    }
+
+    function normalizeOutfitCards(cards) {
+      if (!Array.isArray(cards) || !cards.length) return [];
+      return cards.map((card, index) => ({
+        id: card.id || uid(),
+        label: card.label || `卡片 ${index + 1}`,
+        itemId: card.itemId || null
+      }));
+    }
+
+    function cardsFromLegacySlots(slots = {}) {
+      return Object.entries(slots)
+        .filter(([, itemId]) => itemId)
+        .map(([key, itemId], index) => ({
+          id: uid(),
+          label: categories[normalizeCategory(key)] || `卡片 ${index + 1}`,
+          itemId
+        }));
+    }
+
+    function setAuthFeedback(message, tone = "") {
+      const node = byId("authStatus");
+      node.textContent = message;
+      node.classList.toggle("is-success", tone === "success");
+      node.classList.toggle("is-error", tone === "error");
+    }
+
+    function setSyncNote(message) {
+      byId("syncNote").textContent = message;
+    }
+
+    function updateAuthControls() {
+      const loggedIn = isCloudMode();
+      byId("loginBtn").hidden = loggedIn;
+      byId("signupBtn").hidden = loggedIn;
+      byId("logoutBtn").hidden = !loggedIn;
+      byId("migrateBtn").hidden = !loggedIn || !state.needsLocalMigration;
+      byId("authEmail").disabled = loggedIn;
+      byId("authPassword").disabled = loggedIn;
+      if (loggedIn) {
+        setAuthFeedback(`已登录：${state.user.email || "当前账号"}，新数据会同步到云端。`, "success");
+        setSyncNote(state.needsLocalMigration ? "检测到这台设备还有本地旧数据，可以一键迁移到云端。" : "云端同步已开启，换设备登录同一账号也能继续使用。");
+      } else {
+        setAuthFeedback("未登录，当前数据仅保存在本机浏览器。");
+        setSyncNote("登录后，衣橱、保存搭配和日历记录会同步到 Supabase 云端。");
+      }
+    }
+
+    function loadRememberedAuth() {
+      const enabled = localStorage.getItem(rememberEmailEnabledKey) === "true";
+      const remembered = localStorage.getItem(rememberedEmailKey) || "";
+      byId("rememberAccount").checked = enabled;
+      if (enabled && remembered) {
+        byId("authEmail").value = remembered;
+      }
+    }
+
+    function persistRememberedAuth() {
+      const enabled = byId("rememberAccount").checked;
+      const email = byId("authEmail").value.trim();
+      if (enabled && email) {
+        localStorage.setItem(rememberEmailEnabledKey, "true");
+        localStorage.setItem(rememberedEmailKey, email);
+      } else {
+        localStorage.setItem(rememberEmailEnabledKey, "false");
+        localStorage.removeItem(rememberedEmailKey);
+      }
+    }
+
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(dbName, 1);
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          const store = db.createObjectStore(storeName, { keyPath: "id" });
+          store.createIndex("name", "name", { unique: false });
+        };
+        request.onsuccess = (event) => {
+          state.db = event.target.result;
+          resolve(state.db);
+        };
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function tx(mode = "readonly") {
+      return state.db.transaction(storeName, mode).objectStore(storeName);
+    }
+
+    function getAllLocalItems() {
+      return new Promise((resolve, reject) => {
+        const request = tx().getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function putLocalItem(item) {
+      return new Promise((resolve, reject) => {
+        const request = tx("readwrite").put(item);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function deleteLocalItem(id) {
+      return new Promise((resolve, reject) => {
+        const request = tx("readwrite").delete(id);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function clearLocalItems() {
+      return new Promise((resolve, reject) => {
+        const request = tx("readwrite").clear();
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function readLocalLooks() {
+      try { return JSON.parse(localStorage.getItem(looksKey) || "[]"); } catch { return []; }
+    }
+
+    function readLocalDayPlans() {
+      try { return JSON.parse(localStorage.getItem(dayPlansKey) || "{}"); } catch { return {}; }
+    }
+
+    function hasSupabaseConfig() {
+      return Boolean(window.supabase && supabaseUrl && supabaseAnonKey);
+    }
+
+    function getSupabaseImageUrl(path) {
+      if (!state.supabase || !path) return "";
+      return state.supabase.storage.from(supabaseBucket).getPublicUrl(path).data.publicUrl;
+    }
+
+    function normalizeCloudItem(record) {
+      return {
+        id: record.id,
+        name: record.name || "未命名单品",
+        category: normalizeCategory(record.category),
+        color: record.color || "",
+        seasonTags: Array.isArray(record.season_tags) ? record.season_tags.filter((tag) => seasonOrder.includes(tag)) : [],
+        imagePath: record.image_path || "",
+        image: record.image_path ? getSupabaseImageUrl(record.image_path) : "",
+        createdAt: record.created_at || new Date().toISOString()
+      };
+    }
+
+    async function uploadImageToSupabase(item) {
+      if (!isCloudMode() || !item.image || !String(item.image).startsWith("data:")) return item;
+      const path = `${state.user.id}/${item.id}.jpg`;
+      const response = await fetch(item.image);
+      const blob = await response.blob();
+      const { error } = await state.supabase.storage.from(supabaseBucket).upload(path, blob, { upsert: true, contentType: blob.type || "image/jpeg" });
+      if (error) throw error;
+      item.imagePath = path;
+      item.image = getSupabaseImageUrl(path);
+      return item;
+    }
+
+    async function getAllCloudItems() {
+      const { data, error } = await state.supabase.from(supabaseTables.items).select("id, name, category, color, season_tags, image_path, created_at").order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data || []).map(normalizeCloudItem);
+    }
+
+    async function putCloudItem(item) {
+      await uploadImageToSupabase(item);
+      const payload = {
+        id: item.id,
+        user_id: state.user.id,
+        name: item.name,
+        category: normalizeCategory(item.category) || null,
+        color: item.color || "",
+        season_tags: getSeasonTags(item),
+        image_path: item.imagePath || null,
+        created_at: item.createdAt || new Date().toISOString()
+      };
+      const { error } = await state.supabase.from(supabaseTables.items).upsert(payload);
+      if (error) throw error;
+    }
+
+    async function deleteCloudItem(id) {
+      const item = state.itemMap.get(id);
+      if (item && item.imagePath) {
+        await state.supabase.storage.from(supabaseBucket).remove([item.imagePath]);
+      }
+      const { error } = await state.supabase.from(supabaseTables.items).delete().eq("id", id);
+      if (error) throw error;
+    }
+
+    async function clearCloudItems() {
+      const paths = state.items.map((item) => item.imagePath).filter(Boolean);
+      if (paths.length) {
+        await state.supabase.storage.from(supabaseBucket).remove(paths);
+      }
+      const { error } = await state.supabase.from(supabaseTables.items).delete().eq("user_id", state.user.id);
+      if (error) throw error;
+    }
+
+    async function loadCloudLooks() {
+      const { data, error } = await state.supabase.from(supabaseTables.looks).select("id, name, cards, created_at").order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data || []).map((look) => ({ id: look.id, name: look.name || "Look", cards: normalizeOutfitCards(look.cards), createdAt: look.created_at || new Date().toISOString() }));
+    }
+
+    async function syncLooksToCloud() {
+      if (!isCloudMode()) {
+        localStorage.setItem(looksKey, JSON.stringify(state.looks));
+        return;
+      }
+      const payload = state.looks.map((look) => ({
+        id: look.id,
+        user_id: state.user.id,
+        name: look.name,
+        cards: normalizeOutfitCards(look.cards && look.cards.length ? look.cards : cardsFromLegacySlots(look.slots)),
+        created_at: look.createdAt || new Date().toISOString()
+      }));
+      const { data: existing, error: existingError } = await state.supabase.from(supabaseTables.looks).select("id").eq("user_id", state.user.id);
+      if (existingError) throw existingError;
+      if (payload.length) {
+        const { error } = await state.supabase.from(supabaseTables.looks).upsert(payload);
+        if (error) throw error;
+      }
+      const nextIds = new Set(payload.map((entry) => entry.id));
+      const removedIds = (existing || []).map((entry) => entry.id).filter((id) => !nextIds.has(id));
+      if (removedIds.length) {
+        const { error } = await state.supabase.from(supabaseTables.looks).delete().eq("user_id", state.user.id).in("id", removedIds);
+        if (error) throw error;
+      }
+      if (!payload.length && (existing || []).length) {
+        const { error } = await state.supabase.from(supabaseTables.looks).delete().eq("user_id", state.user.id);
+        if (error) throw error;
+      }
+    }
+
+    async function loadCloudDayPlans() {
+      const { data, error } = await state.supabase.from(supabaseTables.dayPlans).select("date_key, cards, created_at").order("date_key", { ascending: false });
+      if (error) throw error;
+      return (data || []).reduce((acc, entry) => {
+        acc[entry.date_key] = { cards: normalizeOutfitCards(entry.cards), createdAt: entry.created_at || new Date().toISOString() };
+        return acc;
+      }, {});
+    }
+
+    async function syncDayPlansToCloud() {
+      if (!isCloudMode()) {
+        localStorage.setItem(dayPlansKey, JSON.stringify(state.dayPlans));
+        return;
+      }
+      const payload = Object.entries(state.dayPlans).map(([dateKey, plan]) => ({
+        id: `${state.user.id}:${dateKey}`,
+        user_id: state.user.id,
+        date_key: dateKey,
+        cards: normalizeOutfitCards(plan.cards && plan.cards.length ? plan.cards : cardsFromLegacySlots(plan.slots)),
+        created_at: plan.createdAt || new Date().toISOString()
+      }));
+      const { data: existing, error: existingError } = await state.supabase.from(supabaseTables.dayPlans).select("date_key").eq("user_id", state.user.id);
+      if (existingError) throw existingError;
+      if (payload.length) {
+        const { error } = await state.supabase.from(supabaseTables.dayPlans).upsert(payload);
+        if (error) throw error;
+      }
+      const nextKeys = new Set(payload.map((entry) => entry.date_key));
+      const removed = (existing || []).map((entry) => entry.date_key).filter((dateKey) => !nextKeys.has(dateKey));
+      if (removed.length) {
+        const { error } = await state.supabase.from(supabaseTables.dayPlans).delete().eq("user_id", state.user.id).in("date_key", removed);
+        if (error) throw error;
+      }
+      if (!payload.length && (existing || []).length) {
+        const { error } = await state.supabase.from(supabaseTables.dayPlans).delete().eq("user_id", state.user.id);
+        if (error) throw error;
+      }
+    }
+
+    async function getAllItems() { return isCloudMode() ? getAllCloudItems() : getAllLocalItems(); }
+    async function putItem(item) { return isCloudMode() ? putCloudItem(item) : putLocalItem(item); }
+    async function deleteItem(id) { return isCloudMode() ? deleteCloudItem(id) : deleteLocalItem(id); }
+    async function clearItems() { return isCloudMode() ? clearCloudItems() : clearLocalItems(); }
+    async function loadLocalState() { state.items = await getAllLocalItems(); state.looks = readLocalLooks(); state.dayPlans = readLocalDayPlans(); }
+    async function loadCloudState() { state.items = await getAllCloudItems(); state.looks = await loadCloudLooks(); state.dayPlans = await loadCloudDayPlans(); }
+
+    async function evaluateMigrationNeed() {
+      if (!isCloudMode()) {
+        state.needsLocalMigration = false;
+        updateAuthControls();
+        return;
+      }
+      const localItems = await getAllLocalItems();
+      const localLooks = readLocalLooks();
+      const localPlans = readLocalDayPlans();
+      const hasLocalData = Boolean(localItems.length || localLooks.length || Object.keys(localPlans).length);
+      const hasCloudData = Boolean(state.items.length || state.looks.length || Object.keys(state.dayPlans).length);
+      state.needsLocalMigration = hasLocalData && !hasCloudData;
+      updateAuthControls();
+    }
+
+    function rebuildItemMap() {
+      state.itemMap = new Map(state.items.map((item) => [item.id, item]));
+    }
+
+    function getItemById(id) {
+      return id ? state.itemMap.get(id) || null : null;
+    }
+
+    function getItemMeta(item) {
+      const parts = [];
+      const normalizedCategory = normalizeCategory(item.category);
+      if (categories[normalizedCategory]) parts.push(categories[normalizedCategory]);
+      if (item.color) parts.push(item.color);
+      const seasonSummary = getSeasonSummary(item);
+      if (seasonSummary) parts.push(seasonSummary);
+      return parts.join(" / ");
+    }
+
+    function getPendingItems() {
+      return state.items.filter((item) => !isValidCategory(item.category));
+    }
+
+    function getPendingCategorySummary(limit = 4) {
+      const counts = new Map();
+      getPendingItems().forEach((item) => {
+        const key = String(item.category || "空值").trim() || "空值";
+        counts.set(key, (counts.get(key) || 0) + 1);
+      });
+      return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, limit).map(([label, count]) => `${label} × ${count}`).join("，");
+    }
+
+    function getFilteredItems() {
+      const category = byId("filterCategory").value;
+      const query = byId("searchInput").value.trim().toLowerCase();
+      return state.items.filter((item) => {
+        const normalizedCategory = normalizeCategory(item.category);
+        const pendingMatched = state.showPendingOnly ? !isValidCategory(normalizedCategory) : isValidCategory(normalizedCategory);
+        if (!pendingMatched) return false;
+        const categoryMatched = !category || normalizedCategory === category;
+        const haystack = `${item.name} ${item.color || ""} ${getSeasonSummary(item)} ${categories[normalizedCategory] || ""}`.toLowerCase();
+        return categoryMatched && (!query || haystack.includes(query));
+      });
+    }
+
+    function ensureLibraryPage(totalItems) {
+      const totalPages = Math.max(1, Math.ceil(totalItems / 24));
+      if (state.currentLibraryPage > totalPages) state.currentLibraryPage = totalPages;
+      if (state.currentLibraryPage < 1) state.currentLibraryPage = 1;
+      return totalPages;
+    }
+
+    function scheduleRender(renderFn) {
+      let frameId = 0;
+      return () => {
+        if (frameId) cancelAnimationFrame(frameId);
+        frameId = requestAnimationFrame(() => { frameId = 0; renderFn(); });
+      };
+    }
+
+    function queueItemSave(item, delay = 220) {
+      const existingTimer = state.pendingSaveTimers.get(item.id);
+      if (existingTimer) clearTimeout(existingTimer);
+      const timerId = setTimeout(async () => {
+        state.pendingSaveTimers.delete(item.id);
+        try {
+          await putItem(item);
+          if (isCloudMode()) {
+            setAuthFeedback(`已登录：${state.user.email || "当前账号"}，单品改动已同步。`, "success");
+          }
+        } catch (error) {
+          console.error(error);
+          setAuthFeedback(`保存失败：${error.message || error}`, "error");
+        }
+      }, delay);
+      state.pendingSaveTimers.set(item.id, timerId);
+    }
+
+    function queueCloudStateSync(delay = 320) {
+      if (!isCloudMode()) return;
+      if (state.pendingCloudStateTimer) clearTimeout(state.pendingCloudStateTimer);
+      state.pendingCloudStateTimer = setTimeout(async () => {
+        state.pendingCloudStateTimer = null;
+        try {
+          await Promise.all([syncLooksToCloud(), syncDayPlansToCloud()]);
+          setAuthFeedback(`已登录：${state.user.email || "当前账号"}，最近一次改动已同步。`, "success");
+        } catch (error) {
+          console.error(error);
+          setAuthFeedback(`云端同步失败：${error.message || error}`, "error");
+        }
+      }, delay);
+    }
+
+    function persistLooks() {
+      if (isCloudMode()) {
+        queueCloudStateSync();
+        return;
+      }
+      localStorage.setItem(looksKey, JSON.stringify(state.looks));
+    }
+
+    function persistDayPlans() {
+      if (isCloudMode()) {
+        queueCloudStateSync();
+        return;
+      }
+      localStorage.setItem(dayPlansKey, JSON.stringify(state.dayPlans));
+    }
+
+    async function migrateLocalDataToCloud() {
+      if (!isCloudMode()) return;
+      const localItems = await getAllLocalItems();
+      const localLooks = readLocalLooks();
+      const localPlans = readLocalDayPlans();
+      setAuthFeedback("正在迁移本地数据到云端，请稍候...", "");
+      for (const item of localItems) {
+        await putCloudItem({
+          ...item,
+          category: normalizeCategory(item.category),
+          seasonTags: getSeasonTags(item)
+        });
+      }
+      state.looks = localLooks;
+      state.dayPlans = localPlans;
+      await syncLooksToCloud();
+      await syncDayPlansToCloud();
+      await loadCloudState();
+      state.needsLocalMigration = false;
+      updateAuthControls();
+      await refresh(false);
+      setAuthFeedback("本地数据已迁移到云端。", "success");
+    }
+
+    async function handleAuthAction(action) {
+      if (!hasSupabaseConfig()) {
+        setAuthFeedback("Supabase 配置缺失，暂时无法启用云端同步。", "error");
+        return;
+      }
+      const email = byId("authEmail").value.trim();
+      const password = byId("authPassword").value;
+      if (!email || !password) {
+        setAuthFeedback("请先输入邮箱和密码。", "error");
+        return;
+      }
+      persistRememberedAuth();
+      try {
+        if (action === "signup") {
+          setAuthFeedback("正在注册账号...", "");
+          const { data, error } = await state.supabase.auth.signUp({ email, password });
+          if (error) throw error;
+          if (data.session) {
+            setAuthFeedback("注册成功，当前账号已自动登录。", "success");
+          } else {
+            try {
+              const { data: loginData, error: loginError } = await state.supabase.auth.signInWithPassword({ email, password });
+              if (loginError) throw loginError;
+              if (loginData.session) {
+                setAuthFeedback("注册成功，当前账号已自动登录。", "success");
+              } else {
+                setAuthFeedback("注册成功，但还没有拿到会话。请确认后台已关闭邮箱验证。", "error");
+              }
+            } catch (loginAfterSignupError) {
+              const followup = String(loginAfterSignupError.message || "");
+              if (/Email not confirmed/i.test(followup)) {
+                setAuthFeedback("注册成功，但你的 Supabase 还开着邮箱验证。先在后台关闭 Email confirmations。", "error");
+                return;
+              }
+              setAuthFeedback(`注册成功，但自动登录失败：${followup || "请直接点一次登录重试。"}`, "error");
+            }
+          }
+        } else {
+          setAuthFeedback("正在登录...", "");
+          const { data, error } = await state.supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          if (data.session) {
+            setAuthFeedback(`登录成功：${email}`, "success");
+          } else {
+            setAuthFeedback("登录没有拿到有效会话，请检查账号状态。", "error");
+          }
+        }
+      } catch (error) {
+        console.error(error);
+        const message = String(error.message || "");
+        if (/Email not confirmed/i.test(message)) {
+          setAuthFeedback("登录失败：当前 Supabase 还开着邮箱验证。请先在后台关闭它。", "error");
+          return;
+        }
+        if (/Invalid login credentials/i.test(message)) {
+          setAuthFeedback("登录失败：邮箱或密码不正确。", "error");
+          return;
+        }
+        if (/Password should be at least/i.test(message)) {
+          setAuthFeedback("注册失败：密码至少需要 6 位。", "error");
+          return;
+        }
+        if (/User already registered/i.test(message)) {
+          setAuthFeedback("这个邮箱已经注册过了，直接登录即可。", "error");
+          return;
+        }
+        setAuthFeedback(message || "登录失败，请稍后重试。", "error");
+      }
+    }
+
+    async function logout() {
+      if (!isCloudMode()) return;
+      const { error } = await state.supabase.auth.signOut();
+      if (error) {
+        setAuthFeedback(error.message || "退出登录失败。", "error");
+        return;
+      }
+      byId("authPassword").value = "";
+    }
+
+    async function initSupabase() {
+      if (!hasSupabaseConfig()) {
+        updateAuthControls();
+        return;
+      }
+      state.supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+      state.supabase.auth.onAuthStateChange(async (_event, session) => {
+        try {
+          state.user = session?.user || null;
+          if (isCloudMode()) await loadCloudState();
+          else await loadLocalState();
+          await evaluateMigrationNeed();
+          await refresh(false);
+          if (state.currentOutfit[0]) setActiveCard(state.currentOutfit[0].id);
+        } catch (error) {
+          console.error(error);
+          setAuthFeedback(`同步初始化失败：${error.message || error}`, "error");
+        }
+      });
+      const { data, error } = await state.supabase.auth.getSession();
+      if (error) {
+        console.error(error);
+        setAuthFeedback(`会话初始化失败：${error.message || error}`, "error");
+        return;
+      }
+      state.user = data.session?.user || null;
+      updateAuthControls();
+    }
+
+    function fileToDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function optimizeImage(file, maxSide = 1600, quality = 0.82) {
+      if (typeof createImageBitmap !== "function") return fileToDataURL(file);
+      const bitmap = await createImageBitmap(file);
+      const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+      const width = Math.max(1, Math.round(bitmap.width * scale));
+      const height = Math.max(1, Math.round(bitmap.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d", { alpha: false });
+      context.drawImage(bitmap, 0, 0, width, height);
+      bitmap.close();
+      return canvas.toDataURL("image/jpeg", quality);
+    }
+
+    async function addFiles(fileList) {
+      const category = byId("defaultCategory").value;
+      const color = byId("defaultColor").value.trim();
+      const seasonTags = getSelectedSeasonTags("defaultSeasonTags");
+      for (const file of [...fileList]) {
+        if (!file.type.startsWith("image/")) continue;
+        const image = await optimizeImage(file);
+        const item = {
+          id: uid(),
+          name: file.name.replace(/\.[^.]+$/, "") || "未命名单品",
+          category: normalizeCategory(category),
+          color,
+          seasonTags,
+          image,
+          createdAt: new Date().toISOString()
+        };
+        await putItem(item);
+      }
+      await refresh();
+    }
+
+    function itemInCurrentOutfit(itemId) {
+      return state.currentOutfit.some((card) => card.itemId === itemId);
+    }
+
+    function itemInSavedLooks(itemId) {
+      return state.looks.some((look) => normalizeOutfitCards(look.cards).some((card) => card.itemId === itemId));
+    }
+
+    function rerenderForItemMutation(itemId, options = {}) {
+      const { stats = false, library = true, slotPicker = false, slotTabs = false, outfit = false, looksGrid = false } = options;
+      if (stats) renderStats();
+      if (library) renderLibrary();
+      if (slotPicker) renderSlotPicker();
+      if (slotTabs || itemInCurrentOutfit(itemId)) renderSlotTabs();
+      if (outfit || itemInCurrentOutfit(itemId)) renderOutfit();
+      if (looksGrid || itemInSavedLooks(itemId)) renderLooks();
+    }
+
+    function setActiveCard(cardId) {
+      state.activeCardId = cardId;
+      const card = state.currentOutfit.find((entry) => entry.id === cardId);
+      byId("activeSlotText").textContent = `正在编辑：${card ? card.label : "搭配卡片"}`;
+      renderSlotTabs();
+      renderSlotPicker();
+    }
+
+    function setSlot(cardId, itemId) {
+      const card = state.currentOutfit.find((entry) => entry.id === cardId);
+      if (!card) return;
+      card.itemId = itemId;
+      renderSlotTabs();
+      renderOutfit();
+      renderSlotPicker();
+    }
+
+    function addOutfitCard() {
+      const card = createOutfitCard(state.currentOutfit.length + 1);
+      state.currentOutfit = [...state.currentOutfit, card];
+      state.activeCardId = card.id;
+      renderSlotTabs();
+      renderOutfit();
+      renderSlotPicker();
+    }
+
+    function removeOutfitCard(cardId) {
+      state.currentOutfit = state.currentOutfit.filter((card) => card.id !== cardId);
+      if (!state.currentOutfit.length) state.currentOutfit = [createOutfitCard(1)];
+      if (state.activeCardId === cardId) state.activeCardId = state.currentOutfit[0].id;
+      renderSlotTabs();
+      renderOutfit();
+      renderSlotPicker();
+    }
+
+    function clearSlot(cardId) {
+      const card = state.currentOutfit.find((entry) => entry.id === cardId);
+      if (!card) return;
+      card.itemId = null;
+      renderSlotTabs();
+      renderOutfit();
+      renderSlotPicker();
+    }
+
+    function addToOutfit(itemId) {
+      if (!state.currentOutfit.length) state.currentOutfit = [createOutfitCard(1)];
+      if (!state.activeCardId) state.activeCardId = state.currentOutfit[0].id;
+      setSlot(state.activeCardId, itemId);
+    }
+
+    function randomPick(list) {
+      return list[Math.floor(Math.random() * list.length)] || null;
+    }
+
+    function randomizeSlot(cardId) {
+      const pool = state.items.filter((item) => isValidCategory(item.category));
+      const picked = randomPick(pool);
+      if (!picked) return;
+      setSlot(cardId, picked.id);
+    }
+
+    function randomizeOutfit() {
+      state.currentOutfit.forEach((card) => randomizeSlot(card.id));
+    }
+
+    function saveLook() {
+      if (!state.currentOutfit.some((card) => card.itemId)) {
+        alert("当前还没有可保存的搭配。");
+        return;
+      }
+      const fallback = `搭配 ${state.looks.length + 1}`;
+      const name = window.prompt("给这套搭配取个名字", fallback);
+      if (name === null) return;
+      state.looks.unshift({
+        id: uid(),
+        name: name.trim() || fallback,
+        cards: state.currentOutfit.map((card) => ({ ...card })),
+        createdAt: new Date().toISOString()
+      });
+      persistLooks();
+      renderMetrics();
+      renderLooks();
+    }
+
+    function loadLook(id) {
+      const look = state.looks.find((entry) => entry.id === id);
+      if (!look) return;
+      state.currentOutfit = normalizeOutfitCards(look.cards);
+      if (!state.currentOutfit.length) state.currentOutfit = [createOutfitCard(1)];
+      state.activeCardId = state.currentOutfit[0].id;
+      renderSlotTabs();
+      renderOutfit();
+      renderSlotPicker();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function deleteLook(id) {
+      state.looks = state.looks.filter((entry) => entry.id !== id);
+      persistLooks();
+      renderMetrics();
+      renderLooks();
+    }
+
+    async function renameItem(id, nextName) {
+      const item = getItemById(id);
+      if (!item) return;
+      item.name = nextName.trim() || "未命名单品";
+      queueItemSave(item);
+      if (byId("searchInput").value.trim() || byId("filterCategory").value || state.showPendingOnly) renderLibrary();
+      else updateLibraryCardMeta(id);
+      rerenderForItemMutation(id, { library: false, slotTabs: true, looksGrid: true });
+    }
+
+    async function updateItemField(id, field, value) {
+      const item = getItemById(id);
+      if (!item) return;
+      item[field] = typeof value === "string" ? value.trim() : value;
+      if (field === "category") item[field] = normalizeCategory(item[field]);
+      queueItemSave(item);
+      if (field === "category") {
+        rerenderForItemMutation(id, { stats: true, library: true, slotPicker: true, slotTabs: true, outfit: true, looksGrid: true });
+        return;
+      }
+      if (byId("searchInput").value.trim() || byId("filterCategory").value || state.showPendingOnly) renderLibrary();
+      else updateLibraryCardMeta(id);
+      rerenderForItemMutation(id, { library: false, outfit: true, looksGrid: true });
+    }
+
+    async function toggleItemSeasonTag(id, tag, button) {
+      const item = getItemById(id);
+      if (!item) return;
+      const nextTags = new Set(getSeasonTags(item));
+      if (nextTags.has(tag)) nextTags.delete(tag);
+      else nextTags.add(tag);
+      item.seasonTags = seasonOrder.filter((entry) => nextTags.has(entry));
+      if (button) button.classList.toggle("active", nextTags.has(tag));
+      queueItemSave(item, 260);
+      if (byId("searchInput").value.trim() || state.showPendingOnly) renderLibrary();
+      else updateLibraryCardMeta(id);
+      if (itemInCurrentOutfit(id)) renderOutfit();
+    }
+
+    async function bulkAssignPending(category) {
+      const pendingItems = getPendingItems();
+      if (!pendingItems.length) return;
+      const nextCategory = normalizeCategory(category);
+      if (!window.confirm(`确认将当前未归类数据批量设为${categories[nextCategory]}吗？`)) return;
+      await Promise.all(pendingItems.map((item) => {
+        item.category = nextCategory;
+        return putItem(item);
+      }));
+      state.showPendingOnly = false;
+      await refresh(false);
+    }
+
+    async function removeItem(id) {
+      await deleteItem(id);
+      state.currentOutfit = state.currentOutfit.map((card) => card.itemId === id ? { ...card, itemId: null } : card);
+      state.looks = state.looks.map((look) => ({
+        ...look,
+        cards: normalizeOutfitCards(look.cards).map((card) => card.itemId === id ? { ...card, itemId: null } : card)
+      }));
+      Object.keys(state.dayPlans).forEach((dateKey) => {
+        state.dayPlans[dateKey] = {
+          ...state.dayPlans[dateKey],
+          cards: normalizeOutfitCards(state.dayPlans[dateKey].cards).map((card) => card.itemId === id ? { ...card, itemId: null } : card)
+        };
+      });
+      persistLooks();
+      persistDayPlans();
+      await refresh();
+    }
+
+    function getDateKey(date) {
+      return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    }
+
+    function formatDateLabel(dateKey) {
+      return new Date(`${dateKey}T00:00:00`).toLocaleDateString("zh-CN", {
+        month: "long",
+        day: "numeric",
+        weekday: "long"
+      });
+    }
+
+    function renderMetrics() {
+      byId("totalMetric").textContent = String(state.items.length);
+      byId("looksMetric").textContent = String(state.looks.length);
+    }
+
+    function renderStats() {
+      const counts = { top: 0, bottom: 0, set: 0 };
+      state.items.forEach((item) => {
+        const normalized = normalizeCategory(item.category);
+        if (counts[normalized] !== undefined) counts[normalized] += 1;
+      });
+      byId("stats").innerHTML = `
+        <span class="chip">总数 ${state.items.length}</span>
+        <span class="chip">上装 ${counts.top}</span>
+        <span class="chip">下装 ${counts.bottom}</span>
+        <span class="chip">套装 ${counts.set}</span>
+      `;
+    }
+
+    function renderCleanupBar() {
+      const pendingCount = getPendingItems().length;
+      if (!pendingCount) return "";
+      const summary = getPendingCategorySummary();
+      return `
+        <div class="cleanup-bar">
+          <div class="cleanup-copy">
+            还有 ${pendingCount} 件旧数据未归到上装 / 下装 / 套装。
+            ${summary ? `当前识别到的原始分类值：${escapeHtml(summary)}` : ""}
+          </div>
+          <div class="inline-tools">
+            <button class="btn ${state.showPendingOnly ? "primary" : "secondary"}" type="button" onclick="togglePendingView()">
+              ${state.showPendingOnly ? "返回正式衣橱" : "只看未归类数据"}
+            </button>
+            ${state.showPendingOnly ? `
+              <button class="btn ghost" type="button" onclick="bulkAssignPending('top')">全部设为上装</button>
+              <button class="btn ghost" type="button" onclick="bulkAssignPending('bottom')">全部设为下装</button>
+              <button class="btn ghost" type="button" onclick="bulkAssignPending('set')">全部设为套装</button>
+            ` : ""}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSlotTabs() {
+      byId("slotTabs").innerHTML = state.currentOutfit.map((card) => {
+        const item = getItemById(card.itemId);
+        return `
+          <button class="slot-tab ${state.activeCardId === card.id ? "active" : ""}" type="button" onclick="setActiveCard('${card.id}')">
+            <span class="slot-title">${escapeHtml(card.label)}</span>
+            <span class="slot-value">${item ? escapeHtml(item.name) : "未选择"}</span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderOutfit() {
+      byId("outfit").innerHTML = state.currentOutfit.map((card) => {
+        const item = getItemById(card.itemId);
+        return `
+          <article class="preview-card ${item ? "active" : ""}">
+            <div class="preview-head">
+              <div class="preview-label">${escapeHtml(card.label)}</div>
+              <div class="preview-badge">${item ? "已放入单品" : "待选择"}</div>
+            </div>
+            <div class="preview-media">
+              ${item ? `<img src="${item.image}" alt="${escapeHtml(item.name)}" decoding="async" />` : `
+                <div class="empty-state">
+                  <div class="empty-icon">+</div>
+                  <strong>为这张卡片选择一件衣服</strong>
+                </div>
+              `}
+            </div>
+            <div class="preview-foot">
+              <div class="preview-meta">
+                <div class="preview-name">${item ? escapeHtml(item.name) : "空白位置"}</div>
+                <div class="preview-sub">${item ? escapeHtml(getItemMeta(item)) : "从右侧衣橱里选一件放进来"}</div>
+              </div>
+              <div class="preview-actions">
+                <button class="icon-btn" type="button" onclick="setActiveCard('${card.id}')" title="编辑">选</button>
+                <button class="icon-btn" type="button" onclick="clearSlot('${card.id}')" title="清空">清</button>
+                <button class="icon-btn" type="button" onclick="removeOutfitCard('${card.id}')" title="删除">删</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderSlotPicker() {
+      const wrap = byId("slotPickerWrap");
+      const card = state.currentOutfit.find((entry) => entry.id === state.activeCardId);
+      if (!card) {
+        wrap.innerHTML = `<div class="empty-block"><strong>先新增一张搭配卡片</strong><div>新增后就能从衣橱里给它放入单品。</div></div>`;
+        return;
+      }
+      const query = byId("slotSearchInput").value.trim().toLowerCase();
+      const list = getFilteredItems().filter((item) => {
+        const haystack = `${item.name} ${item.color || ""} ${getSeasonSummary(item)}`.toLowerCase();
+        return !query || haystack.includes(query);
+      });
+      if (!list.length) {
+        wrap.innerHTML = `<div class="empty-block"><strong>当前没有可选单品</strong><div>先上传图片，或者调整搜索和筛选条件。</div></div>`;
+        return;
+      }
+      wrap.innerHTML = `
+        <div class="picker-grid">
+          ${list.map((item) => `
+            <button class="picker-card ${card.itemId === item.id ? "active" : ""}" type="button" onclick="setSlot('${card.id}', '${item.id}')">
+              <div class="picker-thumb"><img src="${item.image}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async" /></div>
+              <div>
+                <div class="picker-name">${escapeHtml(item.name)}</div>
+                <div class="picker-meta">${escapeHtml(getItemMeta(item))}</div>
+              </div>
+            </button>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function setLibraryPage(page) {
+      state.currentLibraryPage = page;
+      renderLibrary();
+      const wrap = byId("libraryWrap");
+      if (wrap) window.scrollTo({ top: wrap.offsetTop - 80, behavior: "auto" });
+    }
+
+    function togglePendingView() {
+      state.showPendingOnly = !state.showPendingOnly;
+      state.currentLibraryPage = 1;
+      byId("filterCategory").value = "";
+      renderLibrary();
+    }
+
+    function renderLibrary() {
+      const list = getFilteredItems();
+      const wrap = byId("libraryWrap");
+      if (!list.length) {
+        state.currentLibraryPage = 1;
+        wrap.innerHTML = `
+          ${renderCleanupBar()}
+          <div class="empty-block">
+            <strong>${state.showPendingOnly ? "没有剩余未归类数据" : "衣橱里还没有符合条件的单品"}</strong>
+            <div>${state.showPendingOnly ? "旧数据已经整理完，或者当前搜索条件没有命中。" : "试试放宽筛选条件，或者先上传几张衣服照片。"}</div>
+          </div>
+        `;
+        return;
+      }
+      const totalPages = ensureLibraryPage(list.length);
+      const pageStart = (state.currentLibraryPage - 1) * 24;
+      const pageItems = list.slice(pageStart, pageStart + 24);
+      wrap.innerHTML = `
+        ${renderCleanupBar()}
+        <div class="library">
+          ${pageItems.map((item) => `
+            <article class="library-card" data-item-id="${item.id}">
+              <div class="library-thumb"><img src="${item.image}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async" /></div>
+              <div>
+                <div class="library-name" contenteditable="true" spellcheck="false" onblur="renameItem('${item.id}', this.innerText)">${escapeHtml(item.name)}</div>
+                <div class="library-meta" data-role="meta">${escapeHtml(getItemMeta(item))}</div>
+                ${!isValidCategory(item.category) ? `<div class="library-meta">原始分类：${escapeHtml(String(item.category || "空值"))}</div>` : ""}
+              </div>
+              <div class="library-editors">
+                <select class="select" onchange="updateItemField('${item.id}', 'category', this.value)">
+                  ${Object.entries(categories).map(([value, label]) => `
+                    <option value="${value}" ${normalizeCategory(item.category) === value ? "selected" : ""}>${label}</option>
+                  `).join("")}
+                </select>
+                <div class="mini-grid">
+                  <input class="input" type="text" value="${escapeHtml(item.color || "")}" placeholder="颜色" onchange="updateItemField('${item.id}', 'color', this.value)" />
+                  <div class="tag-row">
+                    ${seasonOrder.map((tag) => `
+                      <button class="tag-btn ${getSeasonTags(item).includes(tag) ? "active" : ""}" type="button" data-tag="${tag}" onclick="toggleItemSeasonTag('${item.id}', '${tag}', this)">${escapeHtml(getSeasonLabel(tag))}</button>
+                    `).join("")}
+                  </div>
+                </div>
+              </div>
+              <div class="library-actions">
+                <button class="btn secondary" type="button" onclick="addToOutfit('${item.id}')">加入搭配</button>
+                <button class="btn ghost" type="button" onclick="removeItem('${item.id}')">删除</button>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+        <div class="pager">
+          <div class="pager-note">第 ${state.currentLibraryPage} / ${totalPages} 页，共 ${list.length} 件</div>
+          <div class="inline-tools">
+            <button class="btn ghost" type="button" onclick="setLibraryPage(${state.currentLibraryPage - 1})" ${state.currentLibraryPage <= 1 ? "disabled" : ""}>上一页</button>
+            <button class="btn ghost" type="button" onclick="setLibraryPage(${state.currentLibraryPage + 1})" ${state.currentLibraryPage >= totalPages ? "disabled" : ""}>下一页</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateLibraryCardMeta(id) {
+      const item = getItemById(id);
+      const card = document.querySelector(`[data-item-id="${id}"]`);
+      if (!item || !card) return;
+      const meta = card.querySelector('[data-role="meta"]');
+      if (meta) meta.textContent = getItemMeta(item);
+      card.querySelectorAll(".tag-row .tag-btn[data-tag]").forEach((button) => {
+        button.classList.toggle("active", getSeasonTags(item).includes(button.dataset.tag));
+      });
+    }
+
+    function renderLooks() {
+      const wrap = byId("looksWrap");
+      if (!state.looks.length) {
+        wrap.innerHTML = `<div class="empty-block"><strong>还没有保存的搭配</strong><div>完成一套组合后，点击上方的“保存当前搭配”。</div></div>`;
+        return;
+      }
+      wrap.innerHTML = `
+        <div class="looks-grid">
+          ${state.looks.map((look) => {
+            const previewItems = normalizeOutfitCards(look.cards).map((card) => getItemById(card.itemId)).filter(Boolean).slice(0, 6);
+            return `
+              <article class="look-card">
+                <div class="look-mosaic">
+                  ${Array.from({ length: 6 }).map((_, index) => {
+                    const item = previewItems[index];
+                    return `<div>${item ? `<img src="${item.image}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async" />` : ""}</div>`;
+                  }).join("")}
+                </div>
+                <div class="look-body">
+                  <div class="look-name">${escapeHtml(look.name)}</div>
+                  <div class="look-meta">${new Date(look.createdAt).toLocaleString("zh-CN")}</div>
+                  <div class="look-actions">
+                    <button class="btn secondary" type="button" onclick="loadLook('${look.id}')">载入这套</button>
+                    <button class="btn ghost" type="button" onclick="deleteLook('${look.id}')">删除</button>
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderCalendar() {
+      byId("calendarWeekdays").innerHTML = weekdayLabels.map((day) => `<div class="calendar-weekday">${day}</div>`).join("");
+      byId("calendarTitle").textContent = `${state.calendarMonth.getFullYear()} 年 ${state.calendarMonth.getMonth() + 1} 月穿搭日历`;
+      byId("selectedDateLabel").textContent = `已选日期：${formatDateLabel(state.selectedDateKey)}`;
+
+      const firstDay = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth(), 1);
+      const startOffset = (firstDay.getDay() + 6) % 7;
+      const startDate = new Date(firstDay);
+      startDate.setDate(firstDay.getDate() - startOffset);
+
+      const cells = [];
+      for (let index = 0; index < 42; index += 1) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + index);
+        const dateKey = getDateKey(currentDate);
+        const isCurrentMonth = currentDate.getMonth() === state.calendarMonth.getMonth();
+        const hasPlan = Boolean(state.dayPlans[dateKey]);
+        const isActive = dateKey === state.selectedDateKey;
+        cells.push(`
+          <button class="calendar-day ${isCurrentMonth ? "" : "muted"} ${hasPlan ? "has-plan" : ""} ${isActive ? "active" : ""}" type="button" onclick="selectCalendarDate('${dateKey}')">
+            <div class="calendar-daynum">${currentDate.getDate()}</div>
+          </button>
+        `);
+      }
+      byId("calendarGrid").innerHTML = cells.join("");
+
+      const plan = state.dayPlans[state.selectedDateKey];
+      const planCards = normalizeOutfitCards(plan && plan.cards);
+      if (!planCards.length || !planCards.some((card) => card.itemId)) {
+        byId("calendarSummary").textContent = "这一天还没有保存穿搭。";
+        return;
+      }
+      const parts = planCards.map((card) => {
+        const item = getItemById(card.itemId);
+        return item ? `${card.label}：${item.name}` : "";
+      }).filter(Boolean);
+      byId("calendarSummary").textContent = parts.join(" / ");
+    }
+
+    function selectCalendarDate(dateKey) {
+      state.selectedDateKey = dateKey;
+      const selectedDate = new Date(`${dateKey}T00:00:00`);
+      state.calendarMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+      renderCalendar();
+    }
+
+    function shiftCalendarMonth(offset) {
+      state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() + offset, 1);
+      renderCalendar();
+    }
+
+    function saveDayPlan() {
+      if (!state.currentOutfit.some((card) => card.itemId)) {
+        alert("当前还没有可保存到日历的穿搭。");
+        return;
+      }
+      state.dayPlans[state.selectedDateKey] = {
+        cards: state.currentOutfit.map((card) => ({ ...card })),
+        createdAt: new Date().toISOString()
+      };
+      persistDayPlans();
+      renderCalendar();
+    }
+
+    function loadDayPlan() {
+      const plan = state.dayPlans[state.selectedDateKey];
+      if (!plan) {
+        alert("这一天还没有保存穿搭。");
+        return;
+      }
+      state.currentOutfit = normalizeOutfitCards(plan.cards);
+      if (!state.currentOutfit.length) state.currentOutfit = [createOutfitCard(1)];
+      state.activeCardId = state.currentOutfit[0].id;
+      renderSlotTabs();
+      renderOutfit();
+      renderSlotPicker();
+    }
+
+    function clearDayPlan() {
+      if (!state.dayPlans[state.selectedDateKey]) return;
+      delete state.dayPlans[state.selectedDateKey];
+      persistDayPlans();
+      renderCalendar();
+    }
+
+    async function refresh(loadItemsToo = true) {
+      if (loadItemsToo) state.items = await getAllItems();
+      state.items.forEach((item) => {
+        item.category = normalizeCategory(item.category);
+        item.seasonTags = getSeasonTags(item);
+      });
+      if (!state.currentOutfit.length) state.currentOutfit = [createOutfitCard(1)];
+      if (!state.activeCardId && state.currentOutfit[0]) state.activeCardId = state.currentOutfit[0].id;
+      state.items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      rebuildItemMap();
+      renderMetrics();
+      renderStats();
+      renderSlotTabs();
+      renderOutfit();
+      renderSlotPicker();
+      renderLibrary();
+      renderLooks();
+      renderCalendar();
+    }
+
+    function exportData() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        items: state.items,
+        looks: state.looks,
+        dayPlans: state.dayPlans
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `wardrobe-export-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    async function importData(file) {
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        if (Array.isArray(data.items)) {
+          for (const item of data.items) {
+            if (item && item.id && item.image) await putItem(item);
+          }
+        }
+        if (Array.isArray(data.looks)) state.looks = data.looks;
+        if (data.dayPlans && typeof data.dayPlans === "object") state.dayPlans = data.dayPlans;
+        persistLooks();
+        persistDayPlans();
+        await refresh();
+      } catch {
+        alert("导入失败，请确认文件格式正确。");
+      }
+    }
+
+    window.setActiveCard = setActiveCard;
+    window.setSlot = setSlot;
+    window.clearSlot = clearSlot;
+    window.removeOutfitCard = removeOutfitCard;
+    window.selectCalendarDate = selectCalendarDate;
+    window.setLibraryPage = setLibraryPage;
+    window.togglePendingView = togglePendingView;
+    window.bulkAssignPending = bulkAssignPending;
+    window.addToOutfit = addToOutfit;
+    window.renameItem = renameItem;
+    window.togglePresetTag = togglePresetTag;
+    window.toggleItemSeasonTag = toggleItemSeasonTag;
+    window.updateItemField = updateItemField;
+    window.removeItem = removeItem;
+    window.loadLook = loadLook;
+    window.deleteLook = deleteLook;
+
+    byId("fileInput").addEventListener("change", async (event) => {
+      if (event.target.files.length) {
+        await addFiles(event.target.files);
+        event.target.value = "";
+      }
+    });
+
+    const scheduleLibraryRender = scheduleRender(renderLibrary);
+    const scheduleSlotPickerRender = scheduleRender(renderSlotPicker);
+
+    byId("filterCategory").addEventListener("change", () => {
+      state.currentLibraryPage = 1;
+      scheduleLibraryRender();
+    });
+    byId("searchInput").addEventListener("input", () => {
+      state.currentLibraryPage = 1;
+      scheduleLibraryRender();
+    });
+    byId("slotSearchInput").addEventListener("input", scheduleSlotPickerRender);
+    byId("randomBtn").addEventListener("click", randomizeOutfit);
+    byId("saveLookBtn").addEventListener("click", saveLook);
+    byId("addCardBtn").addEventListener("click", addOutfitCard);
+    byId("loginBtn").addEventListener("click", () => handleAuthAction("login"));
+    byId("signupBtn").addEventListener("click", () => handleAuthAction("signup"));
+    byId("logoutBtn").addEventListener("click", logout);
+    byId("migrateBtn").addEventListener("click", migrateLocalDataToCloud);
+    byId("rememberAccount").addEventListener("change", persistRememberedAuth);
+    byId("authEmail").addEventListener("blur", persistRememberedAuth);
+    byId("saveDayPlanBtn").addEventListener("click", saveDayPlan);
+    byId("loadDayPlanBtn").addEventListener("click", loadDayPlan);
+    byId("clearDayPlanBtn").addEventListener("click", clearDayPlan);
+    byId("prevMonthBtn").addEventListener("click", () => shiftCalendarMonth(-1));
+    byId("nextMonthBtn").addEventListener("click", () => shiftCalendarMonth(1));
+    byId("randomSlotBtn").addEventListener("click", () => state.activeCardId && randomizeSlot(state.activeCardId));
+    byId("clearSlotBtn").addEventListener("click", () => state.activeCardId && clearSlot(state.activeCardId));
+    byId("exportBtn").addEventListener("click", exportData);
+    byId("importBtn").addEventListener("click", () => byId("importFile").click());
+    byId("importFile").addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        await importData(file);
+        event.target.value = "";
+      }
+    });
+    byId("clearLooksBtn").addEventListener("click", () => {
+      if (!window.confirm("确认清空所有已保存搭配吗？")) return;
+      state.looks = [];
+      persistLooks();
+      renderMetrics();
+      renderLooks();
+    });
+    byId("clearAllBtn").addEventListener("click", async () => {
+      if (!window.confirm("确认清空所有衣物、搭配和日历记录吗？")) return;
+      await clearItems();
+      state.looks = [];
+      state.dayPlans = {};
+      state.currentOutfit = [createOutfitCard(1)];
+      state.activeCardId = state.currentOutfit[0].id;
+      persistLooks();
+      persistDayPlans();
+      await refresh();
+    });
+
+    const dropzone = byId("dropzone");
+    ["dragenter", "dragover"].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dropzone.classList.add("drag");
+      });
+    });
+    ["dragleave", "drop"].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dropzone.classList.remove("drag");
+      });
+    });
+    dropzone.addEventListener("drop", async (event) => {
+      const files = [...event.dataTransfer.files];
+      if (files.length) await addFiles(files);
+    });
+
+    async function boot() {
+      try {
+        loadRememberedAuth();
+        await openDB();
+        await loadLocalState();
+        await initSupabase();
+        if (isCloudMode()) await loadCloudState();
+        await evaluateMigrationNeed();
+        await refresh(false);
+        if (state.currentOutfit[0]) setActiveCard(state.currentOutfit[0].id);
+      } catch (error) {
+        console.error(error);
+        setAuthFeedback(`初始化失败：${error.message || error}`, "error");
+        await loadLocalState();
+        await refresh(false);
+      }
+    }
+
+    boot();
+  </script>
+</body>
+</html>
+
+
